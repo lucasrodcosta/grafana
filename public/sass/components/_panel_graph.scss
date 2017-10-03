@@ -62,6 +62,9 @@
   &.avg::before {
     content: "Avg: "
   }
+  &.p95::before {
+    content: "p95: "
+  }
 }
 
 .graph-legend-icon .fa {
@@ -139,7 +142,7 @@
   }
 
   .graph-legend-value {
-    &.current, &.max, &.min, &.total, &.avg {
+    &.current, &.max, &.min, &.total, &.avg, &.p95 {
       &::before {
         content: '';
       }
