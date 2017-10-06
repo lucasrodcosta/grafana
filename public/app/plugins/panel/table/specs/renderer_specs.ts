@@ -16,9 +16,10 @@ describe('when rendering table', () => {
       {text: 'United', unit: 'bps'},
       {text: 'Sanitized'},
       {text: 'Link'},
+      {text: 'Colored Text'},
     ];
     table.rows = [
-      [1388556366666, 1230, 40, undefined, "", "", "my.host.com", "host1"]
+      [1388556366666, 1230, 40, undefined, "", "", "my.host.com", "host1", "ok"]
     ];
 
     var panel = {
@@ -68,6 +69,27 @@ describe('when rendering table', () => {
           linkUrl: "/dashboard?param=$__cell&param_1=$__cell_1&param_2=$__cell_2",
           linkTooltip: "$__cell $__cell_1 $__cell_6",
           linkTargetBlank: true
+        },
+        {
+          pattern: 'Colored Text',
+          type: 'string',
+          colorMode: 'value',
+          thresholds: [50, 80],
+          textMappings: [
+            {
+              text: 'ok',
+              value: 30
+            },
+            {
+              text: 'warning',
+              value: 60
+            },
+            {
+              text: 'error',
+              value: 100
+            }
+          ],
+          colors: ['green', 'orange', 'red']
         }
       ]
     };
@@ -183,6 +205,21 @@ describe('when rendering table', () => {
         </td>
       `;
       expect(normalize(html)).to.be(normalize(expectedHtml));
+    });
+
+    it('colored text cell should have style', () => {
+      var html = renderer.renderCell(8, 0, 'ok');
+      expect(html).to.be('<td style="color:green">ok</td>');
+    });
+
+    it('colored text cell should have style', () => {
+      var html = renderer.renderCell(8, 0, 'warning');
+      expect(html).to.be('<td style="color:orange">warning</td>');
+    });
+
+    it('colored text cell should have style', () => {
+      var html = renderer.renderCell(8, 0, 'error');
+      expect(html).to.be('<td style="color:red">error</td>');
     });
   });
 });
