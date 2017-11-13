@@ -18,6 +18,20 @@ function translateFillOption(fill) {
   return fill === 0 ? 0.001 : fill/10;
 }
 
+function sortNumber(a, b) {
+  return a - b;
+}
+
+function percentile(data, percent) {
+  if (data.length === 0) {
+    return 0;
+  }
+
+  data.sort(sortNumber);
+  var index = percent * data.length - 1;
+  return data[Math.ceil(index)];
+}
+
 export default class TimeSeries {
   datapoints: any;
   id: string;
@@ -129,6 +143,7 @@ export default class TimeSeries {
     var currentTime;
     var currentValue;
     var nonNulls = 0;
+    var p95Array = [];
     var previousTime;
     var previousValue = 0;
     var previousDeltaUp = true;
@@ -159,6 +174,7 @@ export default class TimeSeries {
           this.stats.total += currentValue;
           this.allIsNull = false;
           nonNulls++;
+          p95Array.push(currentValue);
         }
 
         if (currentValue > this.stats.max) {
@@ -204,6 +220,9 @@ export default class TimeSeries {
     if (this.stats.min === Number.MAX_VALUE) { this.stats.min = null; }
 
     if (result.length && !this.allIsNull) {
+      p95Array.sort(sortNumber);
+      this.stats.p95 = percentile(p95Array, 0.95);
+
       this.stats.avg = (this.stats.total / nonNulls);
       this.stats.current = result[result.length-1][1];
       if (this.stats.current === null && result.length > 1) {

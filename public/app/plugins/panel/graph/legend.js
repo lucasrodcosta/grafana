@@ -134,6 +134,7 @@ function (angular, _, $) {
               header += getTableHeaderHtml('min');
               header += getTableHeaderHtml('max');
               header += getTableHeaderHtml('avg');
+              header += getTableHeaderHtml('p95');
               header += getTableHeaderHtml('current');
               header += getTableHeaderHtml('total');
             }
@@ -173,6 +174,7 @@ function (angular, _, $) {
 
             if (panel.legend.values) {
               var avg = series.formatValue(series.stats.avg);
+              var p95 = series.formatValue(series.stats.p95);
               var current = series.formatValue(series.stats.current);
               var min = series.formatValue(series.stats.min);
               var max = series.formatValue(series.stats.max);
@@ -181,6 +183,7 @@ function (angular, _, $) {
               if (panel.legend.min) { html += '<div class="graph-legend-value min">' + min + '</div>'; }
               if (panel.legend.max) { html += '<div class="graph-legend-value max">' + max + '</div>'; }
               if (panel.legend.avg) { html += '<div class="graph-legend-value avg">' + avg + '</div>'; }
+              if (panel.legend.p95) { html += '<div class="graph-legend-value p95">' + p95 + '</div>'; }
               if (panel.legend.current) { html += '<div class="graph-legend-value current">' + current + '</div>'; }
               if (panel.legend.total) { html += '<div class="graph-legend-value total">' + total + '</div>'; }
             }
