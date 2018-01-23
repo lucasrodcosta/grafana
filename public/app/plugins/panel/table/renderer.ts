@@ -99,21 +99,58 @@ export class TableRenderer {
 
     if (column.style.type === 'string') {
       return v =>  {
+        if (column.style.valueMappings && column.style.mappingType && column.style.mappingType === 2) {
+          for (let i = 0; i < column.style.valueMappings.length; i++) {
+            let mapping = column.style.valueMappings[i];
+            var value = kbn.stringToJsRegex(mapping.value);
+            if (v === null && mapping.value[0] === 'null') {
+              return mapping.text;
+            }
+            if (v !== null) {
+              var tmpV = this.sanitize(v);
+              if (tmpV.match(value)) {
+                if (!_.isString(v) && !_.isArray(v)) {
+                  this.colorState[column.style.colorMode] = this.getColorForValue(v, column.style);
+                }
+                return this.defaultCellFormatter(mapping.text, column.style);
+              }
+            }
+          }
+          if (v !== null && v !== void 0 && !_.isString(v) && !_.isArray(v)) {
+            this.colorState[column.style.colorMode] = this.getColorForValue(v, column.style);
+          }
+        }
+        if (column.style.rangeMappings && column.style.mappingType && column.style.mappingType === 3) {
+          for (let i = 0; i < column.style.rangeMappings.length; i++) {
+            let mapping = column.style.rangeMappings[i];
+            var from = mapping.from;
+            var to = mapping.to;
+            if (v === null && mapping.from[0] === 'null' && mapping.to[0] === 'null') {
+              return mapping.text;
+            }
+            if (v !== null && !_.isString(v) && !_.isArray(v) && from !== '' && to !== '' && Number(from[0]) <= v && Number(to[0]) >= v) {
+              this.colorState[column.style.colorMode] = this.getColorForValue(v, column.style);
+              return this.defaultCellFormatter(mapping.text, column.style);
+            }
+          }
+          if (v !== null && v !== void 0 && !_.isString(v) && !_.isArray(v)) {
+            this.colorState[column.style.colorMode] = this.getColorForValue(v, column.style);
+          }
+        }
         if (v === null) {
           return '-';
         }
-
-        if (column.style.textMappings && column.style.colorMode) {
+        if (column.style.textMappings && column.style.colorMode && column.style.mappingType &&  column.style.mappingType === 1) {
           for (let i = 0; i < column.style.textMappings.length; i++) {
             let mapping = column.style.textMappings[i];
             var regex = kbn.stringToJsRegex(mapping.text);
+            v = this.sanitize(v);
             if (v.match(regex)) {
               this.colorState[column.style.colorMode] = this.getColorForValue(mapping.value, column.style);
               break;
             }
           }
         }
-
         return this.defaultCellFormatter(v, column.style);
       };
     }
