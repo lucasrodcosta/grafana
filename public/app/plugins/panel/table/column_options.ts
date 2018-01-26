@@ -8,6 +8,7 @@ export class ColumnOptionsCtrl {
   panel: any;
   panelCtrl: any;
   colorModes: any;
+  mappingTypes: any;
   columnStyles: any;
   columnTypes: any;
   fontSizes: any;
@@ -30,6 +31,11 @@ export class ColumnOptionsCtrl {
       {text: 'Cell', value: 'cell'},
       {text: 'Value', value: 'value'},
       {text: 'Row', value: 'row'},
+    ];
+    this.mappingTypes = [
+        { text: 'Text to value', value: 1 },
+        { text: 'Value to text', value: 2 },
+        { text: 'Range to text', value: 3 },
     ];
     this.columnTypes = [
       {text: 'Number', value: 'number'},
@@ -77,6 +83,7 @@ export class ColumnOptionsCtrl {
       pattern: '',
       dateFormat: 'YYYY-MM-DD HH:mm:ss',
       thresholds: [],
+      mappingType: 1
     };
 
     var styles = this.panel.styles;
@@ -124,6 +131,32 @@ export class ColumnOptionsCtrl {
 
   removeTextMapping(style, index) {
     style.textMappings.splice(index, 1);
+    this.panelCtrl.render();
+  }
+
+  addValueMapping(style) {
+    if (!style.valueMappings) {
+      style.valueMappings = [];
+    }
+    style.valueMappings.push({ value: '', text: '' });
+    this.panelCtrl.render();
+  }
+
+  removeValueMapping(style, index) {
+    style.valueMappings.splice(index, 1);
+    this.panelCtrl.render();
+  }
+
+  removeRangeMapping(style, index) {
+    style.rangeMappings.splice(index, 1);
+    this.panelCtrl.render();
+  }
+
+  addRangeMapping(style) {
+    if (!style.rangeMappings) {
+      style.rangeMappings = [];
+    }
+    style.rangeMappings.push({ from: '', to: '', text: '' });
     this.panelCtrl.render();
   }
 }
