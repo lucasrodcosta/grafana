@@ -88,6 +88,9 @@
   &.avg::before {
     content: 'Avg: ';
   }
+  &.p95::before {
+    content: 'p95: ';
+  }
 }
 
 .graph-legend-icon .fa {
@@ -187,7 +190,8 @@
     &.max,
     &.min,
     &.total,
-    &.avg {
+    &.avg,
+    &.p95 {
       &::before {
         content: '';
       }
